@@ -115,10 +115,17 @@ function getFollowedUsers(req, res) {
       })
 };
 
+// Devolver listado de usuarios.
+
 function getMyFollows(req, res) {
       var userId = req.user.sub;
+      var find = Follow.find({ user: userId });
 
-      Follow.find({ user: userId }).populate('user followed').exec((err, follows) => {
+      if (req.params.followed) {
+            find = Follow.find({ followed: userId });
+      }
+
+      find.populate('user followed').exec((err, follows) => {
             if (err) return res.status(500).send({
                   message: "Error del servidor"
             });
@@ -129,14 +136,11 @@ function getMyFollows(req, res) {
       });
 }
 
-function getFollowBacks(req, res) {
-
-}
-
 module.exports = {
       prueba,
       saveFollow,
       deleteFollow,
       getFollowingUsers,
-      getFollowedUsers
+      getFollowedUsers,
+      getMyFollows
 }
